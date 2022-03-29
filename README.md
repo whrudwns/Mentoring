@@ -1,2 +1,0 @@
-# Mentoring
-UPF(by Fahad)

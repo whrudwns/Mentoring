@@ -10,7 +10,6 @@ create_power_domain SWITCH -elements {Rca/Msb_Rca}
 # VDD
 create_supply_port VDD -domain TOP
 create_supply_net VDD -domain TOP
-create_supply_net VDD -domain SWITCH -reuse
 connect_supply_net VDD -ports VDD
 
 
@@ -19,6 +18,12 @@ create_supply_port VSS -domain TOP
 create_supply_net VSS -domain TOP
 create_supply_net VSS -domain SWITCH -reuse
 connect_supply_net VSS -ports VSS
+
+# VDDG
+create_supply_port VDDG -domain TOP
+create_supply_net VDDG -domain TOP
+create_supply_net VDDG -domain SWITCH -reuse
+connect_supply_net VDDG -ports VDDG
 
 
 # VDDM
@@ -35,42 +40,39 @@ set_domain_supply_net SWITCH -primary_power_net VDDM -primary_ground_net VSS
 ###############
 # RETAIN
 set_retention msb_ret -domain SWITCH \
-    -retention_power_net VDD -retention_ground_net VSS
+    -retention_power_net VDDG -retention_ground_net VSS  
 
 set_retention_control msb_ret -domain SWITCH \
     -save_signal {Rca/Power_management/ret_en high} \
     -restore_signal {Rca/Power_management/ret_en low}
 
 map_retention_cell msb_ret -domain SWITCH \
-    -lib_cells {RDFFX1_HVT}
+    -lib_cells {RDFFX1_RVT}
 
 
 # ISO
 set_isolation msb_iso_out \
     -domain SWITCH \
     -isolation_power_net VDD -isolation_ground_net VSS \
-    -clamp_value 1 \
+    -clamp_value 0 \
     -applies_to outputs
 
 set_isolation_control msb_iso_out \
     -domain SWITCH \
     -isolation_signal Rca/Power_management/iso_en \
     -isolation_sense high \
-    -location self
+    -location parent
 
 
 # SWITCH
 create_power_switch msb_sw \
     -domain SWITCH \
-    -input_supply_port {in VDD} \
+    -input_supply_port {in VDDG} \
     -output_supply_port {out VDDM} \
     -control_port {pse Rca/Power_management/pse} \
     -on_state {on_state in {pse}} \
     -off_state {off_state {!pse}}
 
-
-
-    
 
 ## ADD PORT STATE INFO
 ######################
@@ -78,12 +80,14 @@ add_port_state VDD -state {HV 0.95}
 
 add_port_state VSS -state {GND 0}
 
-add_port_state msb_sw/out -state {HV 0.95} \
+add_port_state VDDG -state {HV 0.7}
+
+add_port_state msb_sw/out -state {HV 0.7} \
                         -state {OFF off}
 
 
 ## CREATE PST
 #############
-create_pst RCA_pst -supplies {VDD VDDM}
-add_pst_state s0 -pst RCA_pst -state {HV HV}
-add_pst_state s1 -pst RCA_pst -state {HV OFF}
+create_pst RCA_pst -supplies {VDD VDDG VDDM}
+add_pst_state s0 -pst RCA_pst -state {HV HV HV}
+add_pst_state s1 -pst RCA_pst -state {HV HV OFF}

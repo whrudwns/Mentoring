@@ -2,18 +2,18 @@
 module top(A,B,C_in,FLAG,C_out,S_out, CLK);
 input   [31:0]  A,B;
 input           C_in, FLAG, CLK;
-output  [15:0]  S_out;
+output  [31:0]  S_out;
 output          C_out;
 
-reg    [31:0]   reg_A,reg_B;
-reg             reg_C_in, reg_FLAG;
-reg    [15:0]   reg_S_out;
-reg             reg_C_out;
+reg    [31:0]	reg_A,reg_B;
+reg           	reg_C_in, reg_FLAG;
+reg    [31:0]   reg_S_out;
+reg     		reg_C_out;
 
 
 wire    [31:0]   wire_A,wire_B;
 wire             wire_C_in, wire_FLAG;
-wire    [15:0]   wire_S_out;
+wire    [31:0]   wire_S_out;
 wire             wire_C_out;
 
 always @(posedge CLK) begin

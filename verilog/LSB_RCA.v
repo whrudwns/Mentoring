@@ -30,7 +30,7 @@ FA_4 fa_4_2(
             .c_out(c3),
             .s(S[11:8]),
             .CLK(CLK));
-
+            
 FA_4 fa_4_3(
             .a(A[15:12]),
             .b(B[15:12]),
@@ -39,6 +39,6 @@ FA_4 fa_4_3(
             .s(S[15:12]),
             .CLK(CLK));
 
-//assign {C_out, S} = A + B + C_in;  //RCA로 사용 불가
-
+//assign {C_out, S} = A + B + C_in;  //같은 동작이긴 한데 RCA가 아닌듯? -> ㅇㅇ 아님
 endmodule
+

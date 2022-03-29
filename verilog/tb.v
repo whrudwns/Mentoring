@@ -78,10 +78,11 @@ always #5 CLK = ~CLK;
 */
 
 
-//test_bench for power_con
+/*
+//test_bench for POWER_MANAGEMENT
 reg         p, CLK;
 wire        iso_en, ret_en, pse;
-power_con d(p, iso_en, ret_en, pse, CLK);
+POWER_MANAGEMENT d(p, iso_en, ret_en, pse, CLK);
 
 initial begin
     CLK = 0;
@@ -92,42 +93,35 @@ initial begin
     p = 0;
     #460
     p = 1;
-
+    
 end
 always #10 CLK = ~CLK;
+*/
 
-/*
+
 //test_bench for RCA_32 module
 reg     [31:0]  A,B;
 reg             flag, C_in, clk; 
-wire    [15:0]  S_out;
+wire    [31:0]  S_out;
 wire            C_out;
+
+RCA_32 RCA_32(A,B,C_in,flag,C_out,S_out, clk);
 
 initial begin
     clk = 0;
-    A = 32'b0;
-    B = 32'b0;
+    flag = 0;
     C_in = 0;
+    #40
+    A = 32'b11111111111111111111111111111111;
+    B = 32'b10000000000000000000000000000000;
     flag = 0;
-    #5
-    A = 32'b0110;
-    #5
+    #800
     flag = 1;
-    #50
-    B = 32'b01;
-    #5
-    A = 32'b11111111111111110000000000000;
-    #5
+    #120
     flag = 0;
-    #5
-    B = 32'b11111111111111110000000000000;
-    #3 
-    flag =1;
 
 end
 
-always #5 clk = ~clk;
+always #10 clk = ~clk;
 
-RCA_32 RCA_32(A,B,C_in,flag,C_out,S_out, clk);
-*/
 endmodule
